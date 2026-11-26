@@ -1,0 +1,232 @@
+
+{% extends "base.html" %}
+
+{% block title %}AI Mock Interview Setup{% endblock %}
+
+{% block content %}
+
+<style>
+.setup-wrap { max-width: 900px; margin: auto; }
+.setup-card {
+    background: #fff;
+    border: 1px solid #e8edf4;
+    border-radius: 17px;
+    padding: 30px;
+    box-shadow: 0 5px 22px rgba(15,23,42,.04);
+}
+.setup-heading h2 { font-weight: 750; color: #172033; }
+.setup-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+.setup-label {
+    font-weight: 650;
+    color: #344054;
+    margin-bottom: 9px;
+}
+.setup-select {
+    padding: 12px;
+    border: 1px solid #dce3ed;
+    border-radius: 10px;
+}
+.setup-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+.setup-help {
+    font-size: 13px;
+    color: #667085;
+}
+.setup-info {
+    background: #f5f7ff;
+    border: 1px solid #e0e7ff;
+    border-radius: 12px;
+    padding: 17px;
+}
+.generated-question {
+    border: 1px solid #e8edf4;
+    border-radius: 10px;
+    padding: 13px;
+    margin-top: 10px;
+    background: #fafbff;
+}
+</style>
+
+<div class="setup-wrap py-4">
+
+    <div class="text-center setup-heading mb-4">
+
+        <div class="setup-icon bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+            <i class="bi bi-robot"></i>
+        </div>
+
+        <h2>AI Mock Interview</h2>
+
+        <p class="text-muted">
+            Configure a personalized interview based on your target job role and skills.
+        </p>
+
+    </div>
+
+    <div class="setup-card">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Job Role -->
+            <div class="mb-4">
+
+                <label class="setup-label">
+                    <i class="bi bi-briefcase text-primary me-1"></i>
+                    Select Job Role
+                </label>
+
+                <select name="job_role" class="form-select setup-select" required>
+                    <option value="">Choose your job role</option>
+
+                    {% for role in job_roles %}
+                        <option value="{{ role.id }}">
+                            {{ role.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <!-- Resume -->
+            <div class="mb-4">
+
+                <label class="setup-label">
+                    <i class="bi bi-file-earmark-person text-primary me-1"></i>
+                    Select Your Resume (Optional)
+                </label>
+
+                <select name="resume" class="form-select setup-select">
+
+                    <option value="">General Interview (No Resume)</option>
+
+                    {% for resume in resumes %}
+                        <option value="{{ resume.id }}">
+                            Resume uploaded on {{ resume.uploaded_at|date:"d M Y" }}
+                            {% if resume.score != None %}
+                                - Score: {{ resume.score }}/100
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+                <small class="setup-help d-block mt-2">
+                    Choose an analyzed resume to generate personalized questions based on your skills and projects.
+                </small>
+
+                {% if not resumes %}
+                    <div class="alert alert-info mt-3 mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        No resume uploaded yet. You can still start a general interview.
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Difficulty -->
+            <div class="mb-4">
+
+                <label class="setup-label">
+                    <i class="bi bi-speedometer2 text-primary me-1"></i>
+                    Interview Difficulty
+                </label>
+
+                <select name="difficulty" class="form-select setup-select" required>
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+
+            </div>
+
+            <!-- Category -->
+            <div class="mb-4">
+
+                <label class="setup-label">
+                    <i class="bi bi-tags text-primary me-1"></i>
+                    Interview Category
+                </label>
+
+                <select name="category" class="form-select setup-select" required>
+                    <option value="technical">Technical</option>
+                    <option value="hr">HR</option>
+                    <option value="dsa">DSA</option>
+                    <option value="project">Project Based</option>
+                    <option value="situational">Situational</option>
+                </select>
+
+            </div>
+
+            <div class="setup-info mb-4">
+                <div class="d-flex gap-3">
+                    <i class="bi bi-stars text-primary fs-4"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1">AI-Powered Interview</h6>
+                        <p class="text-muted small mb-0">
+                            Your interview will include generated questions, answer evaluation and personalized feedback.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold">
+                <i class="bi bi-play-circle me-2"></i>
+                Start AI Mock Interview
+            </button>
+
+        </form>
+
+        <!-- Created Session -->
+        {% if session %}
+            <div class="mt-4">
+
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Interview created successfully!
+                </div>
+
+                <h5 class="fw-bold">Interview Details</h5>
+
+                <div class="setup-info">
+                    <p><strong>Role:</strong> {{ session.job_role.title }}</p>
+                    <p><strong>Difficulty:</strong> {{ session.difficulty|title }}</p>
+                    <p><strong>Category:</strong> {{ session.category|title }}</p>
+                    <p class="mb-0"><strong>Total Questions:</strong> {{ session.total_questions }}</p>
+                </div>
+
+                <h5 class="fw-bold mt-4">Generated Questions</h5>
+
+                {% for item in session.session_questions.all %}
+                    <div class="generated-question">
+                        <strong>Q{{ item.sequence }}.</strong>
+                        {{ item.question.question_text }}
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,229 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Resume History | AI Career Intelligence{% endblock %}
+
+{% block extra_css %}
+<style>
+    .resume-page { max-width: 1400px; margin: auto; }
+    .page-heading { margin-bottom: 25px; }
+    .page-heading h2 { font-size: 25px; font-weight: 750; color: #172033; }
+    .page-heading p { color: #8490a3; font-size: 14px; margin: 6px 0 0; }
+
+    .history-summary {
+        background: linear-gradient(115deg, #172554, #4338ca);
+        color: white;
+        padding: 25px 28px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+    }
+    .history-summary h4 { font-weight: 750; margin-bottom: 7px; }
+    .history-summary p { color: #dbe4ff; font-size: 13px; margin: 0; }
+
+    .upload-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        color: #3730a3;
+        padding: 11px 17px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .upload-action:hover { background: #eef2ff; color: #3730a3; }
+
+    .history-card {
+        background: white;
+        border: 1px solid #e9edf4;
+        border-radius: 13px;
+        padding: 21px;
+        margin-bottom: 14px;
+        transition: .2s;
+    }
+    .history-card:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 8px 22px rgba(15,23,42,.05);
+        transform: translateY(-2px);
+    }
+
+    .resume-file-icon {
+        width: 47px;
+        height: 47px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 22px;
+    }
+
+    .resume-name {
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 14px;
+        overflow-wrap: anywhere;
+        margin-bottom: 6px;
+    }
+    .resume-date { color: #94a3b8; font-size: 12px; }
+
+    .score-label {
+        color: #94a3b8;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+    .resume-score {
+        color: #4f46e5;
+        font-size: 23px;
+        font-weight: 800;
+    }
+    .pending-label {
+        display: inline-block;
+        background: #fff7ed;
+        color: #c2410c;
+        padding: 7px 11px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .report-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        background: #4f46e5;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .report-btn:hover { background: #3730a3; color: white; }
+
+    .empty-state {
+        text-align: center;
+        background: white;
+        border: 1px dashed #cbd5e1;
+        border-radius: 15px;
+        padding: 65px 20px;
+    }
+    .empty-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 18px;
+    }
+    .empty-state h4 { font-weight: 750; color: #1e293b; }
+    .empty-state p { color: #94a3b8; font-size: 13px; }
+
+    @media(max-width: 767px) {
+        .history-summary { padding: 21px; }
+        .history-summary .summary-actions { margin-top: 17px; }
+        .history-card { padding: 17px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="resume-page">
+
+    <div class="page-heading">
+        <h2>Resume Analysis History</h2>
+        <p>Manage your uploaded resumes and review your AI-generated reports.</p>
+    </div>
+
+    <section class="history-summary">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4><i class="bi bi-file-earmark-check me-2"></i>Your Resume Library</h4>
+                <p>Review previous resume analyses or upload an updated version.</p>
+            </div>
+            <div class="col-md-4 text-md-end summary-actions">
+                <a href="{% url 'resumes:upload' %}" class="upload-action">
+                    <i class="bi bi-plus-lg"></i> Upload New Resume
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {% if resumes %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0" style="font-size:16px;">Your Uploaded Resumes</h5>
+            <span class="text-muted" style="font-size:12px;">Latest uploads</span>
+        </div>
+
+        {% for resume in resumes %}
+            <div class="history-card">
+                <div class="row align-items-center g-3">
+
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="resume-file-icon">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="resume-name">
+                                    {{ resume.file.name|cut:"resumes/" }}
+                                </div>
+                                <div class="resume-date">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    Uploaded {{ resume.uploaded_at|date:"d M Y, h:i A" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="score-label">AI RESUME SCORE</div>
+                        {% if resume.score != None %}
+                            <div class="resume-score">{{ resume.score }}<small style="font-size:12px;color:#94a3b8;"> / 100</small></div>
+                        {% else %}
+                            <span class="pending-label">
+                                <i class="bi bi-hourglass-split me-1"></i> Analysis Pending
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-6 col-md-3 text-md-end">
+                        {% if resume.analysis_result %}
+                            <a href="{% url 'resumes:result' resume.id %}" class="report-btn">
+                                <i class="bi bi-file-earmark-text"></i> View Report
+                            </a>
+                        {% else %}
+                            <span class="text-muted" style="font-size:12px;">
+                                No report available
+                            </span>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-file-earmark-pdf"></i>
+            </div>
+            <h4>No Resume History Found</h4>
+            <p>You haven't uploaded a resume yet. Upload your first resume to get started.</p>
+            <a href="{% url 'resumes:upload' %}" class="report-btn mt-2">
+                <i class="bi bi-cloud-arrow-up"></i> Upload Your Resume
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

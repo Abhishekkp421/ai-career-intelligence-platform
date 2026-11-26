@@ -1,0 +1,717 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | AI Career Intelligence{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-page {
+        max-width: 1500px;
+        margin: 0 auto;
+        color: #172033;
+    }
+
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 15px;
+    }
+
+    .page-heading h2 {
+        font-size: 25px;
+        font-weight: 750;
+        margin: 0;
+        letter-spacing: -0.6px;
+    }
+
+    .page-heading p {
+        color: #8490a3;
+        margin: 6px 0 0;
+        font-size: 14px;
+    }
+
+    .date-label {
+        color: #64748b;
+        font-size: 13px;
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 9px;
+        padding: 10px 14px;
+    }
+
+    /* Welcome section */
+    .welcome-banner {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(115deg, #172554, #3730a3 65%, #6366f1);
+        color: white;
+        padding: 34px;
+        border-radius: 17px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 30px rgba(55, 48, 163, .15);
+    }
+
+    .welcome-banner::after {
+        content: "";
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 50%;
+        right: -65px;
+        top: -115px;
+        box-shadow: 0 0 0 30px rgba(255,255,255,.035),
+                    0 0 0 65px rgba(255,255,255,.025);
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 1;
+        max-width: 650px;
+    }
+
+    .welcome-label {
+        color: #c7d2fe;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 12px;
+    }
+
+    .welcome-banner h2 {
+        font-size: 27px;
+        font-weight: 750;
+        margin-bottom: 10px;
+    }
+
+    .welcome-banner p {
+        color: #dbe4ff;
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 22px;
+    }
+
+    .welcome-actions {
+        display: flex;
+        gap: 11px;
+        flex-wrap: wrap;
+    }
+
+    .welcome-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 650;
+        transition: .2s;
+    }
+
+    .welcome-btn.primary {
+        background: white;
+        color: #3730a3;
+    }
+
+    .welcome-btn.secondary {
+        background: rgba(255,255,255,.12);
+        color: white;
+        border: 1px solid rgba(255,255,255,.2);
+    }
+
+    .welcome-btn:hover {
+        transform: translateY(-2px);
+        color: inherit;
+    }
+
+    /* Section heading */
+    .section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 30px 0 17px;
+    }
+
+    .section-heading h4 {
+        font-size: 17px;
+        font-weight: 750;
+        margin: 0;
+        color: #172033;
+    }
+
+    .section-heading span {
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    /* Statistics */
+    .stat-card {
+        height: 100%;
+        background: #fff;
+        border: 1px solid #e9edf4;
+        border-radius: 13px;
+        padding: 21px;
+        transition: .25s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(15,23,42,.06);
+    }
+
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .stat-icon {
+        width: 43px;
+        height: 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        font-size: 20px;
+    }
+
+    .icon-purple { background: #ede9fe; color: #6d28d9; }
+    .icon-blue { background: #dbeafe; color: #2563eb; }
+    .icon-green { background: #dcfce7; color: #15803d; }
+    .icon-orange { background: #ffedd5; color: #c2410c; }
+
+    .stat-number {
+        font-size: 29px;
+        font-weight: 800;
+        color: #172033;
+        letter-spacing: -1px;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        color: #8490a3;
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .stat-caption {
+        color: #94a3b8;
+        font-size: 11px;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid #f1f3f7;
+    }
+
+    /* Workspace */
+    .workspace-panel {
+        background: white;
+        border: 1px solid #e9edf4;
+        border-radius: 14px;
+        padding: 22px;
+        height: 100%;
+    }
+
+    .workspace-panel h5 {
+        font-size: 15px;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
+
+    .workspace-panel > p {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .workspace-item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 13px 0;
+        border-bottom: 1px solid #f1f3f7;
+    }
+
+    .workspace-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .workspace-item i {
+        width: 37px;
+        height: 37px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        background: #f1f5f9;
+        color: #4f46e5;
+        font-size: 17px;
+        flex-shrink: 0;
+    }
+
+    .workspace-item strong {
+        display: block;
+        color: #334155;
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+
+    .workspace-item small {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .workspace-item a {
+        margin-left: auto;
+        text-decoration: none;
+        color: #4f46e5;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    /* Feature cards */
+    .feature-card {
+        position: relative;
+        height: 100%;
+        padding: 22px;
+        background: white;
+        border: 1px solid #e9edf4;
+        border-radius: 13px;
+        transition: .25s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        border-color: #c7d2fe;
+        box-shadow: 0 12px 25px rgba(15,23,42,.06);
+    }
+
+    .feature-icon {
+        width: 47px;
+        height: 47px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    .feature-card h5 {
+        font-size: 15px;
+        font-weight: 750;
+        color: #1e293b;
+        margin-bottom: 9px;
+    }
+
+    .feature-card p {
+        color: #8490a3;
+        font-size: 12px;
+        line-height: 1.7;
+        min-height: 42px;
+        margin-bottom: 18px;
+    }
+
+    .feature-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        color: #4f46e5;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .feature-link:hover {
+        color: #3730a3;
+        gap: 11px;
+    }
+
+    .dashboard-footer {
+        text-align: center;
+        color: #a0aaba;
+        font-size: 11px;
+        padding: 30px 0 10px;
+    }
+
+    @media(max-width: 768px) {
+        .welcome-banner {
+            padding: 24px;
+        }
+
+        .welcome-banner h2 {
+            font-size: 22px;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+        }
+
+        .date-label {
+            display: none;
+        }
+
+        .stat-card {
+            padding: 17px;
+        }
+
+        .stat-number {
+            font-size: 25px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <!-- Page heading -->
+    <div class="page-heading">
+        <div>
+            <h2>Dashboard</h2>
+            <p>Monitor your career development and interview preparation.</p>
+        </div>
+
+        <div class="date-label">
+            <i class="bi bi-grid-1x2 me-2"></i>
+            Career Intelligence Workspace
+        </div>
+    </div>
+
+
+    <!-- Welcome banner -->
+    <section class="welcome-banner">
+        <div class="welcome-content">
+
+            <div class="welcome-label">
+                AI Career Intelligence Platform
+            </div>
+
+            <h2>Welcome back, {{ request.user.username }}! 👋</h2>
+
+            <p>
+                Your career journey starts here. Analyze your resume,
+                discover suitable opportunities, practice interviews
+                and improve your professional skills with AI.
+            </p>
+
+            <div class="welcome-actions">
+                <a href="{% url 'interviews:setup' %}"
+                   class="welcome-btn primary">
+                    <i class="bi bi-mic-fill"></i>
+                    Start Mock Interview
+                </a>
+
+                <a href="{% url 'career:chat_home' %}"
+                   class="welcome-btn secondary">
+                    <i class="bi bi-robot"></i>
+                    Ask AI Assistant
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Statistics -->
+    <div class="section-heading">
+        <h4>Performance Overview</h4>
+        <span>Your platform statistics</span>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon icon-purple">
+                        <i class="bi bi-file-earmark-check"></i>
+                    </div>
+                    <i class="bi bi-three-dots text-muted"></i>
+                </div>
+
+                <div class="stat-number">{{ total_resumes|default:0 }}</div>
+                <div class="stat-label">Resumes Uploaded</div>
+                <div class="stat-caption">Your resume collection</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon icon-blue">
+                        <i class="bi bi-camera-video"></i>
+                    </div>
+                    <i class="bi bi-three-dots text-muted"></i>
+                </div>
+
+                <div class="stat-number">{{ completed_count|default:0 }}</div>
+                <div class="stat-label">Completed Interviews</div>
+                <div class="stat-caption">Interview practice sessions</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon icon-green">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <i class="bi bi-three-dots text-muted"></i>
+                </div>
+
+                <div class="stat-number">{{ average_score|default:0 }}%</div>
+                <div class="stat-label">Average Interview Score</div>
+                <div class="stat-caption">Your interview performance</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <div class="stat-icon icon-orange">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <i class="bi bi-three-dots text-muted"></i>
+                </div>
+
+                <div class="stat-number">{{ total_sessions|default:0 }}</div>
+                <div class="stat-label">Practice Sessions</div>
+                <div class="stat-caption">Total interview attempts</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Workspace overview -->
+    <div class="section-heading">
+        <h4>Your Career Workspace</h4>
+        <span>Quick navigation</span>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-lg-7">
+            <div class="workspace-panel">
+                <h5>Continue Your Career Preparation</h5>
+                <p>Access your most important career tools.</p>
+
+                <div class="workspace-item">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <div>
+                        <strong>Resume Intelligence</strong>
+                        <small>Analyze and improve your resume</small>
+                    </div>
+                    <a href="{% url 'resumes:upload' %}">Open <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <div class="workspace-item">
+                    <i class="bi bi-briefcase"></i>
+                    <div>
+                        <strong>Job Intelligence</strong>
+                        <small>Explore job descriptions and required skills</small>
+                    </div>
+                    <a href="{% url 'jobs:job_list' %}">Open <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <div class="workspace-item">
+                    <i class="bi bi-bullseye"></i>
+                    <div>
+                        <strong>Resume–Job Matching</strong>
+                        <small>Check your compatibility with job roles</small>
+                    </div>
+                    <a href="{% url 'matching:home' %}">Open <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <div class="workspace-item">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <div>
+                        <strong>Career Recommendations</strong>
+                        <small>Explore your personalized learning roadmap</small>
+                    </div>
+                    <a href="{% url 'career:dashboard' %}">Open <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="workspace-panel">
+                <h5>Improve Your Performance</h5>
+                <p>Take the next step in your preparation.</p>
+
+                <div class="workspace-item">
+                    <i class="bi bi-mic"></i>
+                    <div>
+                        <strong>Practice Interview</strong>
+                        <small>Prepare for technical and HR rounds</small>
+                    </div>
+                    <a href="{% url 'interviews:setup' %}">Start</a>
+                </div>
+
+                <div class="workspace-item">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <div>
+                        <strong>Performance Analytics</strong>
+                        <small>Review your interview results</small>
+                    </div>
+                    <a href="{% url 'evaluation:analytics' %}">View</a>
+                </div>
+
+                <div class="workspace-item">
+                    <i class="bi bi-person-badge"></i>
+                    <div>
+                        <strong>Candidate Profile</strong>
+                        <small>Update skills and career goals</small>
+                    </div>
+                    <a href="{% url 'career:profile' %}">Edit</a>
+                </div>
+
+                <div class="workspace-item">
+                    <i class="bi bi-robot"></i>
+                    <div>
+                        <strong>AI Career Assistant</strong>
+                        <small>Get answers based on your career data</small>
+                    </div>
+                    <a href="{% url 'career:chat_home' %}">Ask AI</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- All tools -->
+    <div class="section-heading">
+        <h4>AI Career Intelligence Tools</h4>
+        <span>Explore all platform modules</span>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </div>
+                <h5>Resume Intelligence</h5>
+                <p>Get AI-powered resume analysis, improvement suggestions and skill insights.</p>
+                <a href="{% url 'resumes:upload' %}" class="feature-link">
+                    Analyze Resume <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <h5>Job Intelligence</h5>
+                <p>Analyze job descriptions and understand the skills employers require.</p>
+                <a href="{% url 'jobs:job_list' %}" class="feature-link">
+                    Explore Jobs <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+                <h5>Resume–Job Matching</h5>
+                <p>Compare your resume with job requirements and identify skill gaps.</p>
+                <a href="{% url 'matching:home' %}" class="feature-link">
+                    Match Resume <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-mic"></i>
+                </div>
+                <h5>AI Mock Interview</h5>
+                <p>Practice with AI-generated questions and receive personalized feedback.</p>
+                <a href="{% url 'interviews:setup' %}" class="feature-link">
+                    Start Interview <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+                <h5>Performance Analytics</h5>
+                <p>Track your interview scores and identify areas that need improvement.</p>
+                <a href="{% url 'evaluation:analytics' %}" class="feature-link">
+                    View Analytics <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-person-lines-fill"></i>
+                </div>
+                <h5>Candidate Profile</h5>
+                <p>Manage your education, technical skills, experience and career goals.</p>
+                <a href="{% url 'career:profile' %}" class="feature-link">
+                    Manage Profile <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-signpost-split"></i>
+                </div>
+                <h5>Career Recommendations</h5>
+                <p>Discover suitable career paths, skill gaps and personalized learning roadmaps.</p>
+                <a href="{% url 'career:dashboard' %}" class="feature-link">
+                    Career Dashboard <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <h5>AI Career Assistant</h5>
+                <p>Ask questions about your resume, job matches, interview history and preparation.</p>
+                <a href="{% url 'career:chat_home' %}" class="feature-link">
+                    Open Assistant <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-footer">
+        AI Career Intelligence & Assessment Platform
+    </div>
+
+</div>
+
+{% endblock %}

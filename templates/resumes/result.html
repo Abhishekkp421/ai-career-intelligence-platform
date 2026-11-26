@@ -1,0 +1,255 @@
+
+{% extends 'base.html' %}
+
+{% block title %}AI Resume Report | AI Career Intelligence{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-page { max-width: 1400px; margin: auto; }
+    .result-heading { margin-bottom: 24px; }
+    .result-heading h2 { font-size: 25px; font-weight: 750; color: #172033; }
+    .result-heading p { color: #8490a3; font-size: 13px; margin: 6px 0 0; }
+
+    .report-top {
+        background: linear-gradient(115deg, #172554, #4338ca);
+        border-radius: 15px;
+        padding: 27px;
+        color: white;
+        margin-bottom: 22px;
+    }
+    .report-top h4 { font-weight: 750; margin-bottom: 8px; }
+    .report-top p { color: #dbe4ff; font-size: 13px; margin: 0; }
+
+    .report-card {
+        background: white;
+        border: 1px solid #e9edf4;
+        border-radius: 13px;
+        padding: 23px;
+        height: 100%;
+        margin-bottom: 18px;
+    }
+    .report-card h5 {
+        font-size: 15px;
+        font-weight: 750;
+        color: #1e293b;
+        margin-bottom: 18px;
+    }
+    .report-card h5 i { color: #4f46e5; margin-right: 8px; }
+
+    .score-area { text-align: center; padding: 8px 0 12px; }
+    .score-circle {
+        width: 155px;
+        height: 155px;
+        border-radius: 50%;
+        border: 10px solid #e0e7ff;
+        outline: 5px solid #f5f3ff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 14px auto 18px;
+        background: #fafaff;
+    }
+    .score-circle h2 {
+        font-size: 39px;
+        line-height: 1;
+        color: #4f46e5;
+        font-weight: 800;
+        margin: 0;
+    }
+    .score-circle small { color: #94a3b8; font-size: 12px; margin-top: 5px; }
+    .score-caption { color: #8490a3; font-size: 12px; }
+
+    .report-list { padding-left: 19px; margin: 0; }
+    .report-list li {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 9px;
+        padding-left: 3px;
+    }
+    .report-list li:last-child { margin-bottom: 0; }
+
+    .skill-tag {
+        display: inline-block;
+        background: #eef2ff;
+        color: #4338ca;
+        padding: 8px 12px;
+        border-radius: 7px;
+        margin: 0 6px 8px 0;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .empty-text { color: #94a3b8; font-size: 13px; margin: 0; }
+
+    .section-icon {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef2ff;
+        border-radius: 9px;
+        color: #4f46e5;
+        margin-right: 9px;
+    }
+
+    .report-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 10px;
+    }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #4f46e5;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .back-link:hover { color: #3730a3; }
+
+    @media(max-width: 600px) {
+        .report-top { padding: 21px; }
+        .report-card { padding: 18px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-page">
+
+    <div class="result-heading">
+        <h2>AI Resume Analysis Report</h2>
+        <p>Understand your resume quality, strengths and opportunities for improvement.</p>
+    </div>
+
+    <section class="report-top">
+        <h4><i class="bi bi-stars me-2"></i>Resume Intelligence Report</h4>
+        <p>Your resume has been evaluated using AI. Review the insights below to improve your career profile.</p>
+    </section>
+
+    <!-- Overall score -->
+    <div class="report-card">
+        <div class="row align-items-center">
+            <div class="col-md-5 text-center">
+                <div class="score-area">
+                    <div class="score-caption fw-semibold">OVERALL RESUME SCORE</div>
+                    <div class="score-circle">
+                        <h2>{{ resume.score|default:0 }}</h2>
+                        <small>out of 100</small>
+                    </div>
+                    <div class="score-caption">AI-generated resume evaluation</div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h5><i class="bi bi-clipboard-data"></i>What this report covers</h5>
+                <ul class="report-list">
+                    <li>Technical and interpersonal skills identified in your resume.</li>
+                    <li>Your resume's strengths and areas that need improvement.</li>
+                    <li>Skills that may be missing for your target career path.</li>
+                    <li>AI-generated suggestions and recommended job roles.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="report-card">
+        <h5><i class="bi bi-code-slash"></i>Technical Skills</h5>
+        {% for skill in resume.analysis_result.technical_skills %}
+            <span class="skill-tag">{{ skill }}</span>
+        {% empty %}
+            <p class="empty-text">No technical skills identified.</p>
+        {% endfor %}
+
+        <hr class="my-4">
+
+        <h5><i class="bi bi-people"></i>Soft Skills</h5>
+        {% for skill in resume.analysis_result.soft_skills %}
+            <span class="skill-tag">{{ skill }}</span>
+        {% empty %}
+            <p class="empty-text">No soft skills identified.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Strengths and weaknesses -->
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5><span class="section-icon"><i class="bi bi-check2-circle"></i></span>Strengths</h5>
+                <ul class="report-list">
+                    {% for item in resume.analysis_result.strengths %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>No strengths identified.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="report-card">
+                <h5><span class="section-icon"><i class="bi bi-exclamation-circle"></i></span>Areas to Improve</h5>
+                <ul class="report-list">
+                    {% for item in resume.analysis_result.weaknesses %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>No weaknesses identified.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Missing skills -->
+    <div class="report-card">
+        <h5><i class="bi bi-puzzle"></i>Missing Skills</h5>
+        <ul class="report-list">
+            {% for item in resume.analysis_result.missing_skills %}
+                <li>{{ item }}</li>
+            {% empty %}
+                <li>No missing skills identified.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="report-card">
+        <h5><i class="bi bi-lightbulb"></i>AI Improvement Suggestions</h5>
+        <ul class="report-list">
+            {% for item in resume.analysis_result.suggestions %}
+                <li>{{ item }}</li>
+            {% empty %}
+                <li>No suggestions available.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Recommended roles -->
+    <div class="report-card">
+        <h5><i class="bi bi-briefcase"></i>Recommended Job Roles</h5>
+        {% for role in resume.analysis_result.job_roles %}
+            <span class="skill-tag"><i class="bi bi-briefcase me-1"></i>{{ role }}</span>
+        {% empty %}
+            <p class="empty-text">No job roles identified.</p>
+        {% endfor %}
+    </div>
+
+    <div class="report-footer">
+        <a href="{% url 'resumes:history' %}" class="back-link">
+            <i class="bi bi-arrow-left"></i> Back to Resume History
+        </a>
+
+        <a href="{% url 'resumes:upload' %}" class="back-link">
+            <i class="bi bi-plus-circle"></i> Analyze Another Resume
+        </a>
+    </div>
+
+</div>
+{% endblock %}

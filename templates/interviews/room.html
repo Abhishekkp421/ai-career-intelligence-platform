@@ -1,0 +1,1257 @@
+
+{% extends "base.html" %}
+
+{% block title %}AI Mock Interview | Career Intelligence{% endblock %}
+
+{% block content %}
+
+<style>
+    .room-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding-bottom: 35px;
+    }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .room-header h2 {
+        font-size: 27px;
+        font-weight: 750;
+        color: #172033;
+        margin-bottom: 7px;
+    }
+
+    .room-header p {
+        color: #718096;
+        margin: 0;
+    }
+
+    .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #bbf7d0;
+        padding: 7px 13px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+    }
+
+    .interview-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .meta-chip {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .room-card {
+        background: #ffffff;
+        border: 1px solid #e8edf4;
+        border-radius: 18px;
+        box-shadow: 0 5px 25px rgba(15, 23, 42, 0.045);
+        overflow: hidden;
+    }
+
+    .room-card-header {
+        padding: 22px 28px;
+        border-bottom: 1px solid #edf0f5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .room-card-header h5 {
+        margin: 0;
+        color: #172033;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .room-card-body {
+        padding: 28px;
+    }
+
+    .language-panel {
+        background: #f8fafc;
+        border: 1px solid #e8edf4;
+        padding: 17px 20px;
+        border-radius: 12px;
+        margin-bottom: 27px;
+    }
+
+    .language-panel label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .language-panel select {
+        max-width: 250px;
+        border-color: #dce3ed;
+        font-size: 13px;
+    }
+
+    .language-help {
+        display: block;
+        color: #8491a3;
+        font-size: 12px;
+        margin-top: 7px;
+    }
+
+    .progress-section {
+        margin-bottom: 27px;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .progress {
+        height: 8px;
+        background: #edf1f7;
+        border-radius: 20px;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #5145e5, #818cf8);
+        border-radius: 20px;
+        transition: width 0.3s ease;
+    }
+
+    .question-item {
+        display: none;
+    }
+
+    .question-item.active {
+        display: block;
+    }
+
+    .question-topline {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 15px;
+    }
+
+    .difficulty-badge,
+    .adaptive-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 11px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .difficulty-easy {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .difficulty-medium {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .difficulty-hard {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .adaptive-badge {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .question-box {
+        background: #f8faff;
+        border: 1px solid #e0e7ff;
+        border-left: 4px solid #5145e5;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 25px;
+    }
+
+    .question-number {
+        display: block;
+        color: #5145e5;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .question-text {
+        color: #1e293b;
+        font-size: 19px;
+        line-height: 1.7;
+        font-weight: 600;
+    }
+
+    .answer-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .answer-heading label {
+        color: #334155;
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .answer-input {
+        border: 1px solid #dce3ed;
+        border-radius: 11px;
+        padding: 15px;
+        font-size: 14px;
+        line-height: 1.7;
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    .answer-input:focus {
+        border-color: #8178f5;
+        box-shadow: 0 0 0 3px rgba(81, 69, 229, .10);
+    }
+
+    .voice-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 16px;
+    }
+
+    .voice-controls .btn {
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 9px 13px;
+    }
+
+    .voice-status {
+        min-height: 22px;
+        margin: 12px 0 0;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .navigation-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        border-top: 1px solid #edf0f5;
+        margin-top: 28px;
+        padding-top: 22px;
+    }
+
+    .navigation-area .btn {
+        min-width: 125px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 11px 18px;
+    }
+
+    .btn-next {
+        background: #5145e5;
+        color: white;
+        border: none;
+    }
+
+    .btn-next:hover {
+        background: #4035c9;
+        color: white;
+    }
+
+    .btn-next:disabled,
+    .navigation-area .btn:disabled {
+        opacity: .55;
+        cursor: not-allowed;
+    }
+
+    #loadingStatus {
+        display: none;
+        margin-top: 20px;
+        padding: 13px 16px;
+        background: #f5f3ff;
+        border: 1px solid #ddd6fe;
+        border-radius: 10px;
+        color: #5b21b6;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+        color: #64748b;
+    }
+
+    .empty-state h5 {
+        color: #1e293b;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    @media(max-width: 650px) {
+        .room-header h2 {
+            font-size: 23px;
+        }
+
+        .room-card-header,
+        .room-card-body {
+            padding: 19px;
+        }
+
+        .question-box {
+            padding: 18px;
+        }
+
+        .question-text {
+            font-size: 16px;
+        }
+
+        .navigation-area .btn {
+            min-width: 0;
+            flex: 1;
+        }
+    }
+</style>
+
+<div class="room-wrapper">
+
+    <!-- Page Header -->
+    <div class="room-header">
+        <div>
+            <h2>AI Mock Interview</h2>
+            <p>Answer questions and receive personalized AI evaluation.</p>
+
+            <div class="interview-meta">
+                <span class="meta-chip">
+                    {{ session.job_role.title }}
+                </span>
+
+                <span class="meta-chip">
+                    {{ session.difficulty|title }} Difficulty
+                </span>
+
+                <span class="meta-chip">
+                    {{ session.category|title }} Interview
+                </span>
+            </div>
+        </div>
+
+        <div class="live-indicator">
+            <span class="live-dot"></span>
+            Interview in Progress
+        </div>
+    </div>
+
+    <!-- Interview Card -->
+    <div class="room-card">
+
+        <div class="room-card-header">
+            <h5>Interview Workspace</h5>
+            <span class="text-muted small">
+                AI Powered Assessment
+            </span>
+        </div>
+
+        <div class="room-card-body">
+
+            {% csrf_token %}
+
+            <!-- Language Selection -->
+            <div class="language-panel">
+
+                <label for="languageSelect">
+                    <i class="bi bi-translate me-1"></i>
+                    Interview Language
+                </label>
+
+                <select id="languageSelect" class="form-select">
+                    <option value="en-IN">English</option>
+                    <option value="hi-IN">Hindi</option>
+                </select>
+
+                <small id="languageHelp" class="language-help">
+                    Select your preferred speaking language.
+                </small>
+
+            </div>
+
+            {% if questions %}
+
+                <!-- Progress -->
+                <div class="progress-section">
+
+                    <div class="progress-label">
+                        <span>Interview Progress</span>
+                        <span id="questionCounter"></span>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            id="progressBar"
+                            class="progress-bar"
+                            role="progressbar"
+                            style="width: 0%">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Questions -->
+                {% for item in questions %}
+
+                    <div
+                        class="question-item {% if forloop.first %}active{% endif %}"
+                        data-index="{{ forloop.counter0 }}"
+                        data-question-id="{{ item.id }}"
+                        data-original-question="{{ item.question.question_text|escape }}"
+                        data-difficulty="{{ item.question.difficulty }}">
+
+                        <div class="question-topline">
+
+                            <span class="difficulty-badge difficulty-{{ item.question.difficulty }}">
+                                {{ item.question.difficulty|title }} Difficulty
+                            </span>
+
+                            <span
+                                class="adaptive-badge adaptive-label"
+                                style="display:none;">
+                                <i class="bi bi-stars me-1"></i>
+                                AI Personalized Question
+                            </span>
+
+                        </div>
+
+                        <!-- Question -->
+                        <div class="question-box">
+
+                            <span class="question-number">
+                                Question {{ forloop.counter }}
+                            </span>
+
+                            <div class="question-text">
+                                {{ item.question.question_text }}
+                            </div>
+
+                        </div>
+
+                        <!-- Answer -->
+                        <div class="answer-heading">
+
+                            <label>
+                                <i class="bi bi-pencil-square me-1"></i>
+                                Your Answer
+                            </label>
+
+                            <span class="text-muted small">
+                                Text or voice input
+                            </span>
+
+                        </div>
+
+                        <textarea
+                            class="form-control answer-input"
+                            rows="6"
+                            placeholder="Write your answer here...">{{ item.saved_answer }}</textarea>
+
+                        <!-- Voice Controls -->
+                        <div class="voice-controls">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-primary"
+                                onclick="speakQuestion(this)">
+
+                                <i class="bi bi-volume-up me-1"></i>
+                                Listen to Question
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-success"
+                                onclick="startListening(this)">
+
+                                <i class="bi bi-mic me-1"></i>
+                                Start Speaking
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-danger"
+                                onclick="stopListening()">
+
+                                <i class="bi bi-stop-circle me-1"></i>
+                                Stop Recording
+
+                            </button>
+
+                        </div>
+
+                        <p class="voice-status"></p>
+
+                    </div>
+
+                {% endfor %}
+
+                <!-- Loading -->
+                <div id="loadingStatus">
+
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+
+                    AI is evaluating your answer and preparing the next question...
+
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation-area">
+
+                    <button
+                        id="previousBtn"
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        onclick="changeQuestion(-1)"
+                        disabled>
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Previous
+
+                    </button>
+
+                    <button
+                        id="nextBtn"
+                        class="btn btn-next"
+                        type="button"
+                        onclick="changeQuestion(1)">
+
+                        Next Question
+                        <i class="bi bi-arrow-right ms-1"></i>
+
+                    </button>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <i class="bi bi-chat-square-text fs-1 mb-3 d-block"></i>
+
+                    <h5>No Interview Questions Found</h5>
+
+                    <p>
+                        There are currently no questions available for this interview.
+                    </p>
+
+                    <a href="{% url 'interviews:setup' %}"
+                       class="btn btn-primary mt-2">
+                        Create New Interview
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+// =====================================
+// GLOBAL VARIABLES
+// =====================================
+
+const questionItems = Array.from(
+    document.querySelectorAll('.question-item')
+);
+
+const languageSelect = document.getElementById('languageSelect');
+const languageHelp = document.getElementById('languageHelp');
+
+let currentQuestion = 0;
+let recognition = null;
+let translationRequestNumber = 0;
+
+const translatedQuestions = new Map();
+
+const interviewCategory = "{{ session.category|escapejs }}";
+
+const englishOnlyCategories = [
+    'technical',
+    'dsa',
+    'project'
+];
+
+
+// =====================================
+// LANGUAGE CONFIGURATION
+// =====================================
+
+if (englishOnlyCategories.includes(interviewCategory)) {
+
+    languageSelect.value = 'en-IN';
+    languageSelect.disabled = true;
+
+    languageHelp.textContent =
+        'English is mandatory for this interview category.';
+
+} else {
+
+    languageSelect.disabled = false;
+
+    languageHelp.textContent =
+        'You can choose English or Hindi for this interview.';
+
+}
+
+
+function getSelectedLanguage() {
+    return languageSelect.value;
+}
+
+
+function getOriginalQuestion(item) {
+    return item.dataset.originalQuestion || '';
+}
+
+
+function getDisplayedQuestion(item) {
+    return item.querySelector('.question-text').textContent.trim();
+}
+
+
+function getCsrfToken() {
+
+    const tokenElement = document.querySelector(
+        '[name=csrfmiddlewaretoken]'
+    );
+
+    if (!tokenElement) {
+        throw new Error('CSRF token not found. Please refresh the page.');
+    }
+
+    return tokenElement.value;
+}
+
+
+// =====================================
+// TRANSLATE QUESTION
+// =====================================
+
+async function applyLanguageToCurrentQuestion(shouldSpeak = true) {
+
+    const item = questionItems[currentQuestion];
+
+    if (!item) return;
+
+    const requestNumber = ++translationRequestNumber;
+
+    const questionId = item.dataset.questionId;
+
+    const questionTextElement =
+        item.querySelector('.question-text');
+
+    const language = getSelectedLanguage();
+
+    let questionText = getOriginalQuestion(item);
+
+    if (language === 'hi-IN') {
+
+        if (translatedQuestions.has(questionId)) {
+
+            questionText = translatedQuestions.get(questionId);
+
+        } else {
+
+            questionTextElement.textContent =
+                'Translating question...';
+
+            try {
+
+                const formData = new FormData();
+
+                formData.append('action', 'translate');
+                formData.append('question_id', questionId);
+
+                const response = await fetch(
+                    window.location.href,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: formData
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(
+                        result.message || 'Translation failed.'
+                    );
+                }
+
+                questionText = result.translated_question;
+
+                translatedQuestions.set(questionId, questionText);
+
+            } catch (error) {
+
+                questionTextElement.textContent =
+                    getOriginalQuestion(item);
+
+                item.querySelector('.voice-status').textContent =
+                    'Translation failed. Showing English question.';
+
+                console.error(error);
+
+                return;
+            }
+        }
+    }
+
+    if (
+        requestNumber !== translationRequestNumber ||
+        item !== questionItems[currentQuestion]
+    ) {
+        return;
+    }
+
+    questionTextElement.textContent = questionText;
+
+    if (shouldSpeak) {
+
+        speakText(
+            questionText,
+            language,
+            item.querySelector('.voice-status')
+        );
+
+    }
+}
+
+
+// =====================================
+// TEXT TO SPEECH
+// =====================================
+
+function speakText(text, language, statusElement = null) {
+
+    if (!('speechSynthesis' in window)) {
+
+        if (statusElement) {
+            statusElement.textContent =
+                'Text-to-speech is not supported by this browser.';
+        }
+
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = language;
+    speech.rate = 0.9;
+    speech.pitch = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+
+    const wantedPrefix =
+        language === 'hi-IN' ? 'hi' : 'en';
+
+    const matchingVoice = voices.find(voice =>
+        voice.lang &&
+        voice.lang.toLowerCase().startsWith(wantedPrefix)
+    );
+
+    if (matchingVoice) {
+        speech.voice = matchingVoice;
+    }
+
+    speech.onstart = function() {
+
+        if (statusElement) {
+            statusElement.textContent = 'Playing question...';
+        }
+
+    };
+
+    speech.onerror = function(event) {
+
+        if (statusElement) {
+            statusElement.textContent =
+                'Voice playback error: ' + event.error;
+        }
+
+    };
+
+    speech.onend = function() {
+
+        if (statusElement) {
+            statusElement.textContent = '';
+        }
+
+    };
+
+    window.speechSynthesis.speak(speech);
+}
+
+
+function speakQuestion(button) {
+
+    const item = button.closest('.question-item');
+
+    speakText(
+        getDisplayedQuestion(item),
+        getSelectedLanguage(),
+        item.querySelector('.voice-status')
+    );
+
+}
+
+
+// =====================================
+// SPEECH TO TEXT
+// =====================================
+
+function startListening(button) {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        alert('Please use Google Chrome for voice recognition.');
+
+        return;
+    }
+
+    if (recognition) {
+
+        alert('Recording is already active. Stop it first.');
+
+        return;
+    }
+
+    const item = button.closest('.question-item');
+
+    const textarea = item.querySelector('.answer-input');
+
+    const status = item.querySelector('.voice-status');
+
+    recognition = new SpeechRecognition();
+
+    recognition.lang = getSelectedLanguage();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    let finalTranscript = '';
+
+    recognition.onstart = function() {
+
+        status.textContent = 'Listening... Speak your answer.';
+
+    };
+
+    recognition.onresult = function(event) {
+
+        let interimTranscript = '';
+
+        for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+        ) {
+
+            const transcript = event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+
+                finalTranscript += transcript + ' ';
+
+            } else {
+
+                interimTranscript += transcript;
+
+            }
+        }
+
+        textarea.value =
+            (finalTranscript + interimTranscript).trim();
+
+    };
+
+    recognition.onerror = function(event) {
+
+        status.textContent = 'Voice error: ' + event.error;
+
+        console.error(event.error);
+
+    };
+
+    recognition.onend = function() {
+
+        if (status.textContent.includes('Listening')) {
+            status.textContent = 'Recording stopped.';
+        }
+
+        recognition = null;
+
+    };
+
+    try {
+
+        recognition.start();
+
+    } catch (error) {
+
+        recognition = null;
+
+        status.textContent = 'Unable to start microphone.';
+
+        console.error(error);
+
+    }
+}
+
+
+function stopListening() {
+
+    if (recognition) {
+        recognition.stop();
+    }
+
+}
+
+
+// =====================================
+// UPDATE NEXT QUESTION WITH AI RESPONSE
+// =====================================
+
+function applyAdaptiveQuestion(data) {
+
+    if (!data) return;
+
+    const targetItem = questionItems.find(
+        item => item.dataset.questionId === String(data.question_id)
+    );
+
+    if (!targetItem) {
+
+        console.error('Target question element not found.');
+
+        return;
+    }
+
+    // Update original question
+    targetItem.dataset.originalQuestion = data.question_text;
+
+    // Update difficulty
+    targetItem.dataset.difficulty = data.difficulty;
+
+    // Clear old translation
+    translatedQuestions.delete(String(data.question_id));
+
+    // Update displayed question
+    targetItem.querySelector('.question-text').textContent =
+        data.question_text;
+
+    // Update difficulty badge
+    const difficultyBadge =
+        targetItem.querySelector('.difficulty-badge');
+
+    difficultyBadge.textContent =
+        data.difficulty.charAt(0).toUpperCase() +
+        data.difficulty.slice(1) + ' Difficulty';
+
+    difficultyBadge.className =
+        'difficulty-badge difficulty-' + data.difficulty;
+
+    // Mark as AI personalized question
+    targetItem.querySelector('.adaptive-label').style.display =
+        'inline-flex';
+
+    targetItem.querySelector('.voice-status').textContent =
+        'AI generated a personalized follow-up question.';
+
+}
+
+
+// =====================================
+// SAVE ANSWER
+// =====================================
+
+async function saveCurrentAnswer() {
+
+    const item = questionItems[currentQuestion];
+
+    const formData = new FormData();
+
+    formData.append(
+        'question_id',
+        item.dataset.questionId
+    );
+
+    formData.append(
+        'answer_text',
+        item.querySelector('.answer-input').value
+    );
+
+    const response = await fetch(
+        window.location.href,
+        {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: formData
+        }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+
+        throw new Error(
+            result.message || 'Answer could not be saved.'
+        );
+
+    }
+
+    // Apply adaptive question returned by backend
+    if (result.adaptive_question) {
+
+        applyAdaptiveQuestion(result.adaptive_question);
+
+    }
+
+    return result;
+
+}
+
+
+// =====================================
+// UPDATE QUESTION SCREEN
+// =====================================
+
+function updateQuestion() {
+
+    questionItems.forEach((item, index) => {
+
+        item.classList.toggle(
+            'active',
+            index === currentQuestion
+        );
+
+    });
+
+    const currentItem = questionItems[currentQuestion];
+
+    document.getElementById('questionCounter').textContent =
+        `Question ${currentQuestion + 1} of ${questionItems.length}`;
+
+    document.getElementById('progressBar').style.width =
+        `${((currentQuestion + 1) / questionItems.length) * 100}%`;
+
+    document.getElementById('previousBtn').disabled =
+        currentQuestion === 0;
+
+    document.getElementById('nextBtn').innerHTML =
+        currentQuestion === questionItems.length - 1
+            ? 'Finish Interview <i class="bi bi-check-circle ms-1"></i>'
+            : 'Next Question <i class="bi bi-arrow-right ms-1"></i>';
+
+    window.speechSynthesis.cancel();
+
+    const hasAnswer =
+        currentItem.querySelector('.answer-input').value.trim().length > 0;
+
+    if (!hasAnswer) {
+
+        applyLanguageToCurrentQuestion(true);
+
+    } else {
+
+        applyLanguageToCurrentQuestion(false);
+
+    }
+
+}
+
+
+// =====================================
+// NAVIGATION + FINISH
+// =====================================
+
+async function changeQuestion(direction) {
+
+    const nextIndex = currentQuestion + direction;
+
+    const isFinishing =
+        direction === 1 &&
+        currentQuestion === questionItems.length - 1;
+
+    // Allow Finish Interview on the last question
+    if (
+        nextIndex < 0 ||
+        (nextIndex >= questionItems.length && !isFinishing)
+    ) {
+        return;
+    }
+
+    const nextButton = document.getElementById('nextBtn');
+
+    const previousButton = document.getElementById('previousBtn');
+
+    const loadingStatus = document.getElementById('loadingStatus');
+
+    nextButton.disabled = true;
+    previousButton.disabled = true;
+
+    stopListening();
+
+    window.speechSynthesis.cancel();
+
+    loadingStatus.style.display = 'block';
+
+    try {
+
+        // Save and evaluate current answer
+        await saveCurrentAnswer();
+
+        // Finish interview on the last question
+        if (isFinishing) {
+
+            const formData = new FormData();
+
+            formData.append('action', 'finish');
+
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+
+                throw new Error(
+                    result.message || 'Interview evaluation failed.'
+                );
+
+            }
+
+            alert('Interview completed! AI evaluation successful.');
+
+            window.location.href =
+                "{% url 'interviews:result' session.id %}";
+
+            return;
+
+        }
+
+        // Move to the next or previous question
+        currentQuestion = nextIndex;
+
+        updateQuestion();
+
+    } catch (error) {
+
+        alert(error.message);
+
+        console.error('Interview Error:', error);
+
+    } finally {
+
+        loadingStatus.style.display = 'none';
+
+        nextButton.disabled = false;
+
+        previousButton.disabled = currentQuestion === 0;
+
+    }
+
+}
+
+
+// =====================================
+// LANGUAGE CHANGE
+// =====================================
+
+languageSelect.addEventListener('change', function() {
+
+    window.speechSynthesis.cancel();
+
+    applyLanguageToCurrentQuestion(true);
+
+});
+
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+if (questionItems.length > 0) {
+
+    updateQuestion();
+
+}
+
+</script>
+
+{% endblock %}

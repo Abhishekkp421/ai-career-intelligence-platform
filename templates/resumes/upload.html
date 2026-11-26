@@ -1,0 +1,516 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Upload Resume | AI Career Intelligence{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-page { max-width: 1150px; margin: auto; }
+
+    .page-heading { margin-bottom: 25px; }
+    .page-heading h2 { font-size: 25px; font-weight: 750; color: #172033; }
+    .page-heading p { color: #8490a3; font-size: 13px; margin: 6px 0 0; }
+
+    .upload-banner {
+        background: linear-gradient(115deg, #172554, #4338ca);
+        padding: 25px 28px;
+        border-radius: 14px;
+        color: white;
+        margin-bottom: 22px;
+    }
+    .upload-banner h4 { font-size: 19px; font-weight: 750; margin-bottom: 7px; }
+    .upload-banner p { color: #dbe4ff; font-size: 13px; margin: 0; }
+
+    .upload-main-card {
+        background: white;
+        border: 1px solid #e9edf4;
+        border-radius: 14px;
+        padding: 28px;
+    }
+
+    .upload-main-card h5 {
+        font-size: 16px;
+        font-weight: 750;
+        color: #1e293b;
+        margin-bottom: 7px;
+    }
+
+    .upload-description {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-bottom: 22px;
+    }
+
+    .upload-box {
+        display: block;
+        border: 2px dashed #c7d2fe;
+        background: #f8faff;
+        border-radius: 13px;
+        padding: 45px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: .25s;
+    }
+
+    .upload-box:hover,
+    .upload-box.dragover {
+        background: #eef2ff;
+        border-color: #4f46e5;
+    }
+
+    .upload-icon {
+        width: 67px;
+        height: 67px;
+        background: #e0e7ff;
+        color: #4f46e5;
+        border-radius: 17px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 31px;
+        margin: 0 auto 17px;
+    }
+
+    .upload-box h6 {
+        font-size: 15px;
+        font-weight: 750;
+        color: #334155;
+        margin-bottom: 7px;
+    }
+
+    .upload-box p {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-bottom: 15px;
+    }
+
+    .browse-btn {
+        display: inline-block;
+        background: #4f46e5;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    #id_file {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .file-info {
+        display: none;
+        align-items: center;
+        gap: 13px;
+        padding: 15px;
+        margin-top: 18px;
+        background: #f5f7ff;
+        border: 1px solid #e0e7ff;
+        border-radius: 10px;
+    }
+
+    .file-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fee2e2;
+        color: #dc2626;
+        border-radius: 9px;
+        font-size: 21px;
+    }
+
+    .file-details { flex: 1; min-width: 0; }
+    .file-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #334155;
+        overflow-wrap: anywhere;
+    }
+    .file-size { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+
+    .upload-submit {
+        width: 100%;
+        border: none;
+        background: #4f46e5;
+        color: white;
+        border-radius: 9px;
+        padding: 14px;
+        font-size: 14px;
+        font-weight: 750;
+        margin-top: 22px;
+        transition: .2s;
+    }
+
+    .upload-submit:hover { background: #3730a3; }
+    .upload-submit:disabled { opacity: .65; cursor: not-allowed; }
+
+    .tips-card {
+        background: #f8fafc;
+        border: 1px solid #edf0f5;
+        border-radius: 11px;
+        padding: 19px;
+        margin-top: 22px;
+    }
+
+    .tips-card h6 {
+        font-size: 13px;
+        font-weight: 750;
+        color: #334155;
+        margin-bottom: 13px;
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        color: #64748b;
+        font-size: 12px;
+        margin-bottom: 9px;
+    }
+    .tip-item:last-child { margin-bottom: 0; }
+    .tip-item i { color: #16a34a; }
+
+    .info-panel {
+        background: white;
+        border: 1px solid #e9edf4;
+        border-radius: 14px;
+        padding: 23px;
+        height: 100%;
+    }
+
+    .info-panel h5 {
+        font-size: 15px;
+        font-weight: 750;
+        color: #1e293b;
+        margin-bottom: 19px;
+    }
+
+    .process-step {
+        display: flex;
+        gap: 13px;
+        margin-bottom: 22px;
+    }
+    .process-step:last-child { margin-bottom: 0; }
+
+    .step-number {
+        width: 33px;
+        height: 33px;
+        border-radius: 9px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .process-step strong {
+        display: block;
+        font-size: 12px;
+        color: #334155;
+        margin-bottom: 4px;
+    }
+
+    .process-step p {
+        color: #94a3b8;
+        font-size: 11px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .security-note {
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        color: #1e40af;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 11px;
+        line-height: 1.6;
+        margin-top: 22px;
+    }
+
+    @media(max-width: 767px) {
+        .upload-main-card { padding: 19px; }
+        .upload-box { padding: 32px 13px; }
+        .upload-banner { padding: 21px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="upload-page">
+
+    <div class="page-heading">
+        <h2>Resume Intelligence</h2>
+        <p>Upload your resume and discover insights powered by artificial intelligence.</p>
+    </div>
+
+    <section class="upload-banner">
+        <h4><i class="bi bi-stars me-2"></i>AI Resume Analysis</h4>
+        <p>Get insights into your skills, strengths, missing skills and suitable job roles.</p>
+    </section>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row g-3">
+
+        <!-- Upload form -->
+        <div class="col-lg-7">
+            <div class="upload-main-card">
+
+                <h5>Upload Your Resume</h5>
+                <p class="upload-description">
+                    Select your latest resume in PDF format to begin the analysis.
+                </p>
+
+                <form method="POST"
+                      enctype="multipart/form-data"
+                      id="resumeForm">
+
+                    {% csrf_token %}
+
+                    <label for="id_file" class="upload-box" id="dropZone">
+
+                        <div class="upload-icon">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+
+                        <h6>Drag and drop your resume here</h6>
+                        <p>or browse files from your computer</p>
+
+                        <span class="browse-btn">
+                            <i class="bi bi-folder2-open me-1"></i>
+                            Choose PDF File
+                        </span>
+
+                        <p class="mt-3 mb-0">
+                            PDF format only · Maximum file size: 5 MB
+                        </p>
+
+                    </label>
+
+                    {{ form.file }}
+
+                    {% if form.file.errors %}
+                        <div class="text-danger small mt-2">
+                            {{ form.file.errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="file-info" id="fileInfo">
+                        <div class="file-icon">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </div>
+
+                        <div class="file-details">
+                            <div class="file-name" id="fileName"></div>
+                            <div class="file-size" id="fileSize"></div>
+                        </div>
+
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                    </div>
+
+                    <div id="clientError"
+                         class="text-danger small mt-2"
+                         role="alert"></div>
+
+                    <button type="submit" class="upload-submit" id="uploadBtn">
+                        <i class="bi bi-cloud-upload me-2"></i>
+                        Upload and Analyze Resume
+                    </button>
+
+                </form>
+
+                <div class="tips-card">
+                    <h6><i class="bi bi-lightbulb text-warning me-2"></i>Tips for better analysis</h6>
+
+                    <div class="tip-item">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Upload your latest and updated resume.
+                    </div>
+
+                    <div class="tip-item">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Make sure your PDF contains selectable, readable text.
+                    </div>
+
+                    <div class="tip-item">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Include your technical skills, projects and education.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="col-lg-5">
+            <div class="info-panel">
+
+                <h5><i class="bi bi-diagram-3 me-2 text-primary"></i>How It Works</h5>
+
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div>
+                        <strong>Upload Your Resume</strong>
+                        <p>Select and upload your PDF resume securely through the platform.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <div>
+                        <strong>AI Resume Evaluation</strong>
+                        <p>AI analyzes your resume content, skills and professional profile.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div>
+                        <strong>Discover Your Insights</strong>
+                        <p>Review your resume score, strengths, weaknesses and missing skills.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <div>
+                        <strong>Improve Your Career Profile</strong>
+                        <p>Use the recommendations to improve your resume and job readiness.</p>
+                    </div>
+                </div>
+
+                <div class="security-note">
+                    <i class="bi bi-shield-check me-2"></i>
+                    <strong>File requirements:</strong> Select a PDF file up to 5 MB. Do not upload passwords, confidential documents or information that you do not want processed.
+                </div>
+
+                <a href="{% url 'resumes:history' %}"
+                   class="btn btn-outline-primary w-100 mt-3"
+                   style="font-size:13px;font-weight:650;padding:11px;">
+                    <i class="bi bi-clock-history me-2"></i>
+                    View Resume History
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    const fileInput = document.getElementById('id_file');
+    const dropZone = document.getElementById('dropZone');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const uploadForm = document.getElementById('resumeForm');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const clientError = document.getElementById('clientError');
+
+    if (!fileInput || !dropZone) return;
+
+    function clearError() {
+        clientError.textContent = '';
+    }
+
+    function validateFile(file) {
+        clearError();
+
+        if (!file) return false;
+
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            clientError.textContent = 'Please select a PDF file.';
+            return false;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            clientError.textContent = 'File size must not exceed 5 MB.';
+            return false;
+        }
+
+        if (file.size === 0) {
+            clientError.textContent = 'The selected file is empty.';
+            return false;
+        }
+
+        return true;
+    }
+
+    function displayFile(file) {
+        if (!validateFile(file)) {
+            fileInfo.style.display = 'none';
+            fileInput.value = '';
+            return;
+        }
+
+        fileName.textContent = file.name;
+        fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+        fileInfo.style.display = 'flex';
+    }
+
+    fileInput.addEventListener('change', function () {
+        displayFile(this.files[0]);
+    });
+
+    dropZone.addEventListener('dragover', function (event) {
+        event.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', function () {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', function (event) {
+        event.preventDefault();
+        dropZone.classList.remove('dragover');
+
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+            const file = files[0];
+
+            try {
+                const transfer = new DataTransfer();
+                transfer.items.add(file);
+                fileInput.files = transfer.files;
+                displayFile(file);
+            } catch (error) {
+                clientError.textContent = 'Unable to select this file. Please use the browse button.';
+            }
+        }
+    });
+
+    uploadForm.addEventListener('submit', function (event) {
+        const file = fileInput.files[0];
+
+        if (!validateFile(file)) {
+            event.preventDefault();
+            return;
+        }
+
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>Uploading... Please wait';
+    });
+})();
+</script>
+{% endblock %}

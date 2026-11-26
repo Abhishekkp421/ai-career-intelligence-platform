@@ -1,0 +1,642 @@
+
+{% extends "base.html" %}
+
+{% block title %}Add Job Description | Career Intelligence{% endblock %}
+
+{% block content %}
+
+<style>
+    .job-create-wrap {
+        max-width: 1100px;
+        margin: auto;
+        padding-bottom: 35px;
+    }
+
+    .page-header {
+        margin-bottom: 25px;
+    }
+
+    .page-header h2 {
+        font-size: 27px;
+        font-weight: 750;
+        color: #172033;
+    }
+
+    .page-header p {
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .back-link {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        color: #5145e5;
+    }
+
+    .main-card {
+        background: #fff;
+        border: 1px solid #e8edf4;
+        border-radius: 17px;
+        box-shadow: 0 5px 25px rgba(15,23,42,.045);
+        overflow: hidden;
+    }
+
+    .card-heading {
+        padding: 23px 28px;
+        border-bottom: 1px solid #edf0f5;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .heading-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eeedff;
+        color: #5145e5;
+        font-size: 22px;
+    }
+
+    .card-heading h5 {
+        font-size: 16px;
+        font-weight: 750;
+        color: #172033;
+        margin-bottom: 4px;
+    }
+
+    .card-heading p {
+        font-size: 12px;
+        color: #8491a3;
+        margin: 0;
+    }
+
+    .card-body {
+        padding: 28px;
+    }
+
+    .field-label {
+        display: block;
+        color: #344054;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 9px;
+    }
+
+    .field-label span {
+        color: #98a2b3;
+        font-weight: 400;
+    }
+
+    .job-input {
+        width: 100%;
+        border: 1px solid #dce3ed;
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #fff;
+        color: #334155;
+        font-size: 13px;
+        outline: none;
+        transition: .2s;
+    }
+
+    .job-input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99,102,241,.11);
+    }
+
+    textarea.job-input {
+        min-height: 200px;
+        resize: vertical;
+        line-height: 1.7;
+    }
+
+    .field-help {
+        display: block;
+        margin-top: 7px;
+        font-size: 11px;
+        color: #8491a3;
+    }
+
+    .field-errors {
+        color: #dc2626;
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    .field-errors ul {
+        padding-left: 18px;
+        margin-bottom: 0;
+    }
+
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .7px;
+        margin: 28px 0;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: #e5e7eb;
+    }
+
+    .upload-area {
+        background: #f8faff;
+        border: 2px dashed #cbd5e1;
+        border-radius: 14px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: .2s;
+    }
+
+    .upload-area:hover {
+        border-color: #818cf8;
+        background: #f5f4ff;
+    }
+
+    .upload-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        background: #fee2e2;
+        color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+        margin: 0 auto 13px;
+    }
+
+    .upload-area h6 {
+        font-weight: 750;
+        color: #263247;
+        font-size: 14px;
+    }
+
+    .upload-area p {
+        font-size: 12px;
+        color: #8491a3;
+    }
+
+    .upload-area input[type="file"] {
+        max-width: 430px;
+        margin: 15px auto 0;
+        font-size: 12px;
+        text-align: left;
+    }
+
+    .selected-file {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 7px 12px;
+        background: #eef2ff;
+        color: #5145e5;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .form-actions .btn {
+        padding: 11px 20px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .btn-analyze {
+        background: #5145e5;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-analyze:hover {
+        background: #4035c9;
+        color: #fff;
+    }
+
+    .btn-analyze:disabled {
+        opacity: .7;
+        cursor: not-allowed;
+    }
+
+    .feature-card {
+        height: 100%;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #e8edf4;
+        border-radius: 13px;
+        transition: .2s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(15,23,42,.05);
+    }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        margin-bottom: 13px;
+    }
+
+    .feature-card h6 {
+        font-size: 13px;
+        font-weight: 750;
+        color: #263247;
+    }
+
+    .feature-card p {
+        font-size: 12px;
+        color: #8491a3;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .info-note {
+        background: #f5f3ff;
+        border: 1px solid #e4e0ff;
+        border-radius: 10px;
+        padding: 13px 15px;
+        color: #5b4bb7;
+        font-size: 12px;
+        line-height: 1.6;
+        margin-top: 20px;
+    }
+
+    @media(max-width: 600px) {
+        .page-header h2 {
+            font-size: 23px;
+        }
+
+        .card-heading,
+        .card-body {
+            padding: 19px;
+        }
+
+        .upload-area {
+            padding: 23px 14px;
+        }
+    }
+</style>
+
+<div class="job-create-wrap py-3">
+
+    <!-- Header -->
+    <div class="page-header">
+
+        <a href="{% url 'jobs:job_list' %}" class="back-link">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Job Intelligence
+        </a>
+
+        <h2 class="mt-3 mb-1">Add Job Description</h2>
+
+        <p class="mb-0">
+            Upload or paste a job description to discover its requirements using AI.
+        </p>
+
+    </div>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Main Form -->
+    <div class="main-card">
+
+        <div class="card-heading">
+
+            <div class="heading-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+
+            <div>
+                <h5>Job Information</h5>
+                <p>Provide the job details for AI-powered analysis.</p>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST"
+                  enctype="multipart/form-data"
+                  id="jobForm">
+
+                {% csrf_token %}
+
+                <!-- Job Title and Company -->
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="field-label">
+                            Job Title
+                            <span>(Optional)</span>
+                        </label>
+
+                        {{ form.title }}
+
+                        {% if form.title.errors %}
+                            <div class="field-errors">
+                                {{ form.title.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="field-label">
+                            Company
+                            <span>(Optional)</span>
+                        </label>
+
+                        {{ form.company }}
+
+                        {% if form.company.errors %}
+                            <div class="field-errors">
+                                {{ form.company.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="mt-4">
+
+                    <label class="field-label">
+                        Job Description
+                    </label>
+
+                    {{ form.description_text }}
+
+                    {% if form.description_text.errors %}
+                        <div class="field-errors">
+                            {{ form.description_text.errors }}
+                        </div>
+                    {% endif %}
+
+                    <small class="field-help">
+                        Paste the complete job description, including responsibilities,
+                        technical skills and qualifications.
+                    </small>
+
+                </div>
+
+                <!-- Divider -->
+                <div class="section-divider">
+                    OR UPLOAD A PDF
+                </div>
+
+                <!-- PDF Upload -->
+                <div class="upload-area">
+
+                    <div class="upload-icon">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </div>
+
+                    <h6>Upload Job Description PDF</h6>
+
+                    <p class="mb-2">
+                        Select a PDF file containing the job description.
+                    </p>
+
+                    {{ form.uploaded_file }}
+
+                    {% if form.uploaded_file.errors %}
+                        <div class="field-errors">
+                            {{ form.uploaded_file.errors }}
+                        </div>
+                    {% endif %}
+
+                    <div>
+                        <span class="selected-file" id="fileName">
+                            <i class="bi bi-file-earmark me-1"></i>
+                            No file selected
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Non-field Errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3 mb-0">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="info-note">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Enter a job description or upload its PDF. Your AI engine
+                    will extract skills, experience, responsibilities and
+                    qualifications for resume matching.
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn btn-analyze"
+                            id="analyzeBtn">
+
+                        <i class="bi bi-stars me-2"></i>
+                        Analyze with AI
+
+                    </button>
+
+                    <a href="{% url 'jobs:job_list' %}"
+                       class="btn btn-light border">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="row g-3 mt-3">
+
+        <div class="col-md-4">
+
+            <div class="feature-card">
+
+                <div class="feature-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-lightning-charge"></i>
+                </div>
+
+                <h6>AI Requirement Extraction</h6>
+
+                <p>
+                    Automatically identify important job requirements
+                    and experience expectations.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="feature-card">
+
+                <div class="feature-icon bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-list-check"></i>
+                </div>
+
+                <h6>Skill Identification</h6>
+
+                <p>
+                    Discover required technical skills, preferred skills
+                    and soft skills.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="feature-card">
+
+                <div class="feature-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+
+                <h6>Resume Matching</h6>
+
+                <p>
+                    Use extracted job requirements to evaluate your
+                    resume against the target role.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const title = document.getElementById("id_title");
+    const company = document.getElementById("id_company");
+    const description = document.getElementById("id_description_text");
+    const file = document.getElementById("id_uploaded_file");
+
+    const fileName = document.getElementById("fileName");
+    const jobForm = document.getElementById("jobForm");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+
+    // Style Django form fields
+    [title, company, description].forEach(function (field) {
+
+        if (field) {
+            field.classList.add("job-input");
+        }
+
+    });
+
+    if (description) {
+        description.rows = 8;
+        description.placeholder =
+            "Paste the complete job description here...";
+    }
+
+    if (title) {
+        title.placeholder = "e.g. Python Backend Developer";
+    }
+
+    if (company) {
+        company.placeholder = "e.g. Company Name";
+    }
+
+    // PDF upload styling
+    if (file) {
+
+        file.classList.add("form-control");
+
+        file.addEventListener("change", function () {
+
+            if (file.files.length) {
+
+                fileName.innerHTML =
+                    '<i class="bi bi-file-earmark-pdf me-1"></i>' +
+                    file.files[0].name;
+
+            } else {
+
+                fileName.innerHTML =
+                    '<i class="bi bi-file-earmark me-1"></i>No file selected';
+
+            }
+
+        });
+
+    }
+
+    // Prevent repeated submissions
+    jobForm.addEventListener("submit", function () {
+
+        analyzeBtn.disabled = true;
+
+        analyzeBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>' +
+            'Analyzing Job Description...';
+
+    });
+
+});
+</script>
+
+{% endblock %}

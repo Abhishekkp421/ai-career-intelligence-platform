@@ -1,0 +1,368 @@
+
+{% extends "base.html" %}
+
+{% block title %}Candidate Career Profile{% endblock %}
+
+{% block content %}
+<style>
+.profile-wrap {
+    max-width: 1050px;
+    margin: auto;
+    padding-bottom: 40px;
+}
+
+.profile-heading {
+    color: #172033;
+    font-weight: 800;
+    letter-spacing: -.5px;
+}
+
+.profile-subtitle {
+    color: #667085;
+    font-size: 14px;
+}
+
+.profile-card {
+    background: #fff;
+    border: 1px solid #e8edf4;
+    border-radius: 17px;
+    padding: 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(15,23,42,.035);
+}
+
+.profile-section-title {
+    color: #172033;
+    font-weight: 750;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.profile-section-subtitle {
+    color: #98a2b3;
+    font-size: 12px;
+    margin-bottom: 22px;
+}
+
+.profile-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+    background: #eef2ff;
+    color: #4f46e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.profile-wrap .form-label {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 650;
+    margin-bottom: 8px;
+}
+
+.profile-wrap input:not([type="checkbox"]),
+.profile-wrap select,
+.profile-wrap textarea {
+    width: 100%;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    padding: 11px 13px;
+    color: #172033;
+    background: #fff;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.profile-wrap input:focus,
+.profile-wrap select:focus,
+.profile-wrap textarea:focus {
+    border-color: #818cf8;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79,70,229,.10);
+}
+
+.profile-wrap textarea {
+    min-height: 105px;
+    resize: vertical;
+}
+
+.profile-wrap input::placeholder,
+.profile-wrap textarea::placeholder {
+    color: #98a2b3;
+}
+
+.profile-help {
+    color: #98a2b3;
+    font-size: 12px;
+    margin-top: 7px;
+    display: block;
+}
+
+.profile-wrap .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+    color: #dc2626;
+    font-size: 12px;
+}
+
+.profile-wrap .alert-danger {
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.profile-save-btn {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-weight: 650;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.profile-save-btn:hover {
+    background: #4338ca;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.profile-cancel-btn {
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: #475467;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-weight: 650;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.profile-cancel-btn:hover {
+    background: #f9fafb;
+    color: #172033;
+}
+
+.profile-top-card {
+    background: linear-gradient(120deg, #eef2ff, #f5f3ff);
+    border: 1px solid #e0e7ff;
+    border-radius: 17px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+@media(max-width: 576px) {
+    .profile-card {
+        padding: 19px;
+    }
+
+    .profile-heading {
+        font-size: 23px;
+    }
+}
+</style>
+
+<div class="profile-wrap py-4">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="profile-heading mb-2">Candidate Career Profile</h2>
+        <p class="profile-subtitle mb-0">
+            Build your professional identity and define your career goals.
+        </p>
+    </div>
+
+    <!-- Intro Card -->
+    <div class="profile-top-card">
+        <div class="d-flex align-items-center gap-3">
+            <div class="profile-icon" style="width:52px;height:52px;">
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1" style="color:#312e81;">
+                    Your Career Identity
+                </h6>
+                <p class="mb-0 small" style="color:#6366a1;">
+                    Keep your information updated to receive more relevant
+                    job matches and career recommendations.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <!-- Personal Information -->
+        <div class="profile-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="profile-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+                <div>
+                    <h5 class="profile-section-title mb-1">Personal Information</h5>
+                    <p class="profile-section-subtitle mb-0">
+                        Basic information about you.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name</label>
+                    {{ form.full_name }}
+                    {{ form.full_name.errors }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number</label>
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Education -->
+        <div class="profile-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="profile-icon">
+                    <i class="bi bi-mortarboard"></i>
+                </div>
+                <div>
+                    <h5 class="profile-section-title mb-1">Education Details</h5>
+                    <p class="profile-section-subtitle mb-0">
+                        Your academic background and experience.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label">Education</label>
+                    {{ form.education }}
+                    {{ form.education.errors }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Specialization</label>
+                    {{ form.specialization }}
+                    {{ form.specialization.errors }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Graduation Year</label>
+                    {{ form.graduation_year }}
+                    {{ form.graduation_year.errors }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Experience Level</label>
+                    {{ form.experience_level }}
+                    {{ form.experience_level.errors }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="profile-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="profile-icon">
+                    <i class="bi bi-code-slash"></i>
+                </div>
+                <div>
+                    <h5 class="profile-section-title mb-1">Skills & Expertise</h5>
+                    <p class="profile-section-subtitle mb-0">
+                        Highlight your technical and interpersonal abilities.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Technical Skills</label>
+                {{ form.technical_skills }}
+                {% if form.technical_skills.help_text %}
+                    <small class="profile-help">
+                        {{ form.technical_skills.help_text }}
+                    </small>
+                {% endif %}
+                {{ form.technical_skills.errors }}
+            </div>
+
+            <div>
+                <label class="form-label">Soft Skills</label>
+                {{ form.soft_skills }}
+                {% if form.soft_skills.help_text %}
+                    <small class="profile-help">
+                        {{ form.soft_skills.help_text }}
+                    </small>
+                {% endif %}
+                {{ form.soft_skills.errors }}
+            </div>
+        </div>
+
+        <!-- Career Preferences -->
+        <div class="profile-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="profile-icon">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+                <div>
+                    <h5 class="profile-section-title mb-1">Career Preferences</h5>
+                    <p class="profile-section-subtitle mb-0">
+                        Define the direction you want your career to take.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Target Job Role</label>
+                {{ form.target_role }}
+                {{ form.target_role.errors }}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Career Interests</label>
+                {{ form.career_interests }}
+                {{ form.career_interests.errors }}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Preferred Work Location</label>
+                {{ form.preferred_location }}
+                {{ form.preferred_location.errors }}
+            </div>
+
+            <div>
+                <label class="form-label">Career Goals</label>
+                {{ form.career_goal }}
+                {{ form.career_goal.errors }}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-wrap gap-3 justify-content-end">
+            <a href="{% url 'jobs:job_list' %}" class="profile-cancel-btn">
+                Cancel
+            </a>
+
+            <button type="submit" class="profile-save-btn">
+                <i class="bi bi-check-circle me-2"></i>
+                Save Career Profile
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

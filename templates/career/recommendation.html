@@ -1,0 +1,668 @@
+
+{% extends "base.html" %}
+
+{% block title %}AI Career Recommendations{% endblock %}
+
+{% block content %}
+<style>
+    .career-page {
+        max-width: 1250px;
+        margin: auto;
+        color: #172033;
+    }
+
+    .career-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .career-header h2 {
+        font-size: 27px;
+        font-weight: 750;
+        margin-bottom: 6px;
+        letter-spacing: -0.6px;
+    }
+
+    .career-header p {
+        color: #778196;
+        margin: 0;
+    }
+
+    .career-card {
+        background: #fff;
+        border: 1px solid #e8edf4;
+        border-radius: 16px;
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 4px 15px rgba(20, 35, 60, 0.035);
+    }
+
+    .career-card h5 {
+        font-size: 16px;
+        font-weight: 750;
+        margin-bottom: 18px;
+        color: #202b40;
+    }
+
+    .career-hero {
+        background: linear-gradient(120deg, #172b55, #294c85);
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .career-hero::after {
+        content: "";
+        position: absolute;
+        width: 230px;
+        height: 230px;
+        border: 35px solid rgba(255,255,255,0.06);
+        border-radius: 50%;
+        right: -55px;
+        top: -95px;
+    }
+
+    .career-hero-label {
+        color: #c8d7f4;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .career-hero h3 {
+        font-size: 29px;
+        font-weight: 800;
+        margin-bottom: 18px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .career-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .career-meta-item {
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 9px;
+        padding: 9px 13px;
+        font-size: 13px;
+    }
+
+    .career-meta-item strong {
+        color: #fff;
+    }
+
+    .section-heading {
+        font-size: 19px;
+        font-weight: 800;
+        margin: 30px 0 16px;
+        color: #202b40;
+    }
+
+    .section-subtitle {
+        color: #8490a3;
+        font-size: 13px;
+        margin-top: -10px;
+        margin-bottom: 18px;
+    }
+
+    .insight-card {
+        border: 1px solid #e8edf4;
+        border-radius: 16px;
+        padding: 23px;
+        height: 100%;
+        background: #fff;
+    }
+
+    .insight-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 20px;
+    }
+
+    .insight-icon {
+        width: 39px;
+        height: 39px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .strength-icon {
+        color: #15956c;
+        background: #e7f8f1;
+    }
+
+    .gap-icon {
+        color: #d45d5d;
+        background: #fff0ed;
+    }
+
+    .insight-heading h5 {
+        font-size: 16px;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .insight-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .insight-list li {
+        padding: 11px 0;
+        border-bottom: 1px solid #f0f2f6;
+        font-size: 13.5px;
+        color: #536075;
+        display: flex;
+        gap: 10px;
+        line-height: 1.6;
+    }
+
+    .insight-list li:last-child {
+        border-bottom: none;
+    }
+
+    .list-marker {
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .strength-marker {
+        color: #15956c;
+    }
+
+    .gap-marker {
+        color: #d45d5d;
+    }
+
+    .recommendation-item {
+        border: 1px solid #e9edf4;
+        border-radius: 13px;
+        padding: 19px;
+        margin-bottom: 13px;
+        transition: 0.2s ease;
+        background: #fff;
+    }
+
+    .recommendation-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .recommendation-item:hover {
+        border-color: #bdcdef;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(25, 45, 80, 0.05);
+    }
+
+    .recommendation-item h6 {
+        font-size: 15px;
+        font-weight: 750;
+        margin-bottom: 8px;
+        color: #263956;
+    }
+
+    .recommendation-item p {
+        color: #748096;
+        font-size: 13.5px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .project-item {
+        border: 1px solid #e9edf4;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 14px;
+    }
+
+    .project-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .project-item h6 {
+        font-weight: 750;
+        font-size: 15px;
+        margin-bottom: 9px;
+    }
+
+    .project-item p {
+        font-size: 13.5px;
+        color: #758096;
+        line-height: 1.7;
+    }
+
+    .skill-label {
+        display: inline-block;
+        padding: 6px 11px;
+        margin: 3px 4px 3px 0;
+        border-radius: 7px;
+        background: #edf3ff;
+        color: #355da1;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .advice-card {
+        background: #f2f6ff;
+        border: 1px solid #dce7fb;
+        border-radius: 16px;
+        padding: 24px;
+    }
+
+    .advice-card h5 {
+        font-weight: 750;
+        color: #294b83;
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .advice-card p {
+        color: #526681;
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+        white-space: pre-line;
+    }
+
+    .roadmap-card {
+        background: #fff;
+        border: 1px solid #e8edf4;
+        border-radius: 16px;
+        padding: 23px;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .roadmap-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .roadmap-number {
+        width: 39px;
+        height: 39px;
+        border-radius: 11px;
+        background: #edf3ff;
+        color: #3563aa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .roadmap-top h5 {
+        font-size: 15px;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .roadmap-top span {
+        display: block;
+        font-size: 11px;
+        color: #8994a7;
+        margin-top: 4px;
+    }
+
+    .roadmap-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .roadmap-list li {
+        display: flex;
+        gap: 10px;
+        padding: 11px 0;
+        border-bottom: 1px solid #f0f2f6;
+        color: #59667b;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .roadmap-list li:last-child {
+        border-bottom: none;
+    }
+
+    .roadmap-check {
+        color: #4774ba;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .empty-message {
+        color: #929bad;
+        font-size: 13px;
+        padding: 12px 0;
+        margin: 0;
+    }
+
+    .career-back-btn {
+        border-radius: 9px;
+        padding: 9px 15px;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    @media(max-width: 768px) {
+        .career-page {
+            padding-bottom: 20px;
+        }
+
+        .career-header h2 {
+            font-size: 23px;
+        }
+
+        .career-hero {
+            padding: 23px;
+        }
+
+        .career-hero h3 {
+            font-size: 23px;
+        }
+
+        .career-card,
+        .insight-card,
+        .roadmap-card {
+            padding: 19px;
+        }
+    }
+</style>
+
+<div class="career-page">
+
+    <!-- Header -->
+    <div class="career-header">
+        <div>
+            <h2>AI Career Recommendations</h2>
+            <p>Your personalized career intelligence and growth strategy.</p>
+        </div>
+
+        <a href="{% url 'career:dashboard' %}"
+           class="btn btn-outline-secondary career-back-btn">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Recommended Role Hero -->
+    <div class="career-hero">
+        <div class="career-hero-label">
+            <i class="bi bi-stars me-1"></i>
+            Your Recommended Career Path
+        </div>
+
+        <h3>{{ recommendation.target_role }}</h3>
+
+        <div class="career-meta">
+            <div class="career-meta-item">
+                <i class="bi bi-graph-up-arrow me-1"></i>
+                Readiness Level:
+                <strong>{{ recommendation.readiness_level }}</strong>
+            </div>
+
+            <div class="career-meta-item">
+                <i class="bi bi-calendar3 me-1"></i>
+                Generated:
+                <strong>{{ recommendation.created_at|date:"d M Y, h:i A" }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strengths and Skill Gaps -->
+    <div class="section-heading">Your Career Insights</div>
+    <p class="section-subtitle">
+        Understand your current strengths and the areas that need improvement.
+    </p>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-lg-6">
+            <div class="insight-card">
+                <div class="insight-heading">
+                    <div class="insight-icon strength-icon">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <h5>Your Strengths</h5>
+                </div>
+
+                <ul class="insight-list">
+                    {% for item in recommendation.strengths %}
+                        <li>
+                            <span class="list-marker strength-marker">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </span>
+                            {{ item }}
+                        </li>
+                    {% empty %}
+                        <li class="empty-message">No strengths identified.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="insight-card">
+                <div class="insight-heading">
+                    <div class="insight-icon gap-icon">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <h5>Skill Gaps</h5>
+                </div>
+
+                <ul class="insight-list">
+                    {% for item in recommendation.skill_gaps %}
+                        <li>
+                            <span class="list-marker gap-marker">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                            </span>
+                            {{ item }}
+                        </li>
+                    {% empty %}
+                        <li class="empty-message">No skill gaps identified.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recommended Roles -->
+    <div class="section-heading">Recommended Job Roles</div>
+    <p class="section-subtitle">
+        Explore other career opportunities based on your profile.
+    </p>
+
+    <div class="career-card mb-4">
+        {% for item in recommendation.recommended_roles %}
+            <div class="recommendation-item">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="insight-icon strength-icon flex-shrink-0">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+
+                    <div>
+                        <h6>{{ item.role }}</h6>
+                        <p>{{ item.reason }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="empty-message">No additional roles recommended.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Recommended Projects -->
+    <div class="section-heading">Recommended Projects</div>
+    <p class="section-subtitle">
+        Build practical experience through these project ideas.
+    </p>
+
+    <div class="career-card mb-4">
+        {% for project in recommendation.recommended_projects %}
+            <div class="project-item">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="insight-icon strength-icon">
+                        <i class="bi bi-code-square"></i>
+                    </div>
+                    <h6 class="mb-0">{{ project.name }}</h6>
+                </div>
+
+                <p class="mb-3">{{ project.description }}</p>
+
+                <div>
+                    <strong class="small text-secondary">Skills to develop</strong>
+                    <div class="mt-2">
+                        {% for skill in project.skills %}
+                            <span class="skill-label">{{ skill }}</span>
+                        {% empty %}
+                            <span class="text-muted small">No skills specified.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="empty-message">No projects recommended.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Personalized Advice -->
+    <div class="section-heading">Personalized Career Advice</div>
+
+    <div class="advice-card mb-4">
+        <h5>
+            <i class="bi bi-lightbulb-fill me-2"></i>
+            AI Career Guidance
+        </h5>
+
+        <p>{{ recommendation.career_advice }}</p>
+    </div>
+
+    <!-- 90-Day Roadmap -->
+    {% if roadmap %}
+        <div class="section-heading">
+            <i class="bi bi-signpost-split me-2"></i>
+            Your 90-Day Learning Roadmap
+        </div>
+
+        <p class="section-subtitle">
+            Follow these three stages to strengthen your skills and prepare for your target role.
+        </p>
+
+        <div class="row g-3 mb-4">
+
+            <!-- Days 1-30 -->
+            <div class="col-lg-4">
+                <div class="roadmap-card">
+                    <div class="roadmap-top">
+                        <div class="roadmap-number">01</div>
+                        <div>
+                            <h5>Foundation</h5>
+                            <span>Days 1–30</span>
+                        </div>
+                    </div>
+
+                    <ul class="roadmap-list">
+                        {% for task in roadmap.roadmap_data.days_30 %}
+                            <li>
+                                <span class="roadmap-check">
+                                    <i class="bi bi-check2-circle"></i>
+                                </span>
+                                {{ task }}
+                            </li>
+                        {% empty %}
+                            <li class="empty-message">No tasks available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Days 31-60 -->
+            <div class="col-lg-4">
+                <div class="roadmap-card">
+                    <div class="roadmap-top">
+                        <div class="roadmap-number">02</div>
+                        <div>
+                            <h5>Practical Development</h5>
+                            <span>Days 31–60</span>
+                        </div>
+                    </div>
+
+                    <ul class="roadmap-list">
+                        {% for task in roadmap.roadmap_data.days_60 %}
+                            <li>
+                                <span class="roadmap-check">
+                                    <i class="bi bi-check2-circle"></i>
+                                </span>
+                                {{ task }}
+                            </li>
+                        {% empty %}
+                            <li class="empty-message">No tasks available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Days 61-90 -->
+            <div class="col-lg-4">
+                <div class="roadmap-card">
+                    <div class="roadmap-top">
+                        <div class="roadmap-number">03</div>
+                        <div>
+                            <h5>Job Preparation</h5>
+                            <span>Days 61–90</span>
+                        </div>
+                    </div>
+
+                    <ul class="roadmap-list">
+                        {% for task in roadmap.roadmap_data.days_90 %}
+                            <li>
+                                <span class="roadmap-check">
+                                    <i class="bi bi-check2-circle"></i>
+                                </span>
+                                {{ task }}
+                            </li>
+                        {% empty %}
+                            <li class="empty-message">No tasks available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div class="text-center py-3">
+        <a href="{% url 'career:dashboard' %}"
+           class="btn btn-outline-primary career-back-btn">
+            <i class="bi bi-arrow-left me-1"></i>
+            Return to Career Dashboard
+        </a>
+    </div>
+
+</div>
+{% endblock %}

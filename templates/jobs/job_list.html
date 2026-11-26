@@ -1,0 +1,376 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.job-list-wrap {
+    max-width: 1200px;
+    margin: auto;
+    padding-bottom: 35px;
+}
+
+.job-list-header h2 {
+    color: #172033;
+    font-weight: 800;
+    letter-spacing: -.5px;
+}
+
+.job-subtitle {
+    color: #667085;
+    font-size: 14px;
+}
+
+.job-stat {
+    background: #fff;
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    padding: 22px;
+    height: 100%;
+    box-shadow: 0 5px 20px rgba(15,23,42,.035);
+    transition: .2s;
+}
+
+.job-stat:hover {
+    transform: translateY(-2px);
+}
+
+.job-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    flex-shrink: 0;
+}
+
+.job-stat-label {
+    color: #98a2b3;
+    font-size: 11px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+}
+
+.job-stat-value {
+    color: #172033;
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.job-section-title {
+    color: #172033;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.job-item {
+    background: #fff;
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    padding: 22px;
+    transition: .2s ease;
+    height: 100%;
+}
+
+.job-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15,23,42,.06);
+    border-color: #dbe3f0;
+}
+
+.job-company {
+    color: #667085;
+    font-size: 13px;
+}
+
+.job-title {
+    color: #172033;
+    font-size: 17px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+.job-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 11px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.job-status.completed {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+.job-status.pending {
+    background: #fffaeb;
+    color: #b54708;
+}
+
+.job-date {
+    color: #98a2b3;
+    font-size: 12px;
+}
+
+.job-view-btn {
+    border: 1px solid #d0d5dd;
+    color: #4f46e5;
+    background: #fff;
+    border-radius: 9px;
+    padding: 9px 15px;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: .2s;
+}
+
+.job-view-btn:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+}
+
+.job-add-btn {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.job-add-btn:hover {
+    background: #4338ca;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.job-empty {
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 17px;
+    padding: 60px 20px;
+}
+
+.job-empty-icon {
+    width: 75px;
+    height: 75px;
+    border-radius: 20px;
+    background: #eef2ff;
+    color: #4f46e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: auto;
+}
+
+.job-record-count {
+    color: #667085;
+    background: #f2f4f7;
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+@media(max-width: 576px) {
+    .job-item {
+        padding: 18px;
+    }
+
+    .job-list-header h2 {
+        font-size: 23px;
+    }
+
+    .job-view-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+
+<div class="job-list-wrap py-4">
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 job-list-header mb-4">
+        <div>
+            <h2 class="mb-1">Job Intelligence</h2>
+            <p class="job-subtitle mb-0">
+                Understand job requirements with AI-powered analysis.
+            </p>
+        </div>
+
+        <a href="{% url 'jobs:job_create' %}" class="job-add-btn">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Job Description
+        </a>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+            <div class="job-stat d-flex align-items-center gap-3">
+                <div class="job-stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+
+                <div>
+                    <p class="job-stat-label mb-1">Total Job Descriptions</p>
+                    <h3 class="job-stat-value mb-0">{{ total_jobs }}</h3>
+                    <small class="text-muted">Jobs added to your workspace</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="job-stat d-flex align-items-center gap-3">
+                <div class="job-stat-icon bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-stars"></i>
+                </div>
+
+                <div>
+                    <p class="job-stat-label mb-1">AI Analyzed Jobs</p>
+                    <h3 class="job-stat-value mb-0">{{ analyzed_jobs }}</h3>
+                    <small class="text-muted">Successfully analyzed by AI</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Job List Heading -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+            <h5 class="job-section-title mb-1">Your Job Descriptions</h5>
+            <p class="text-muted small mb-0">
+                View and manage your saved job descriptions.
+            </p>
+        </div>
+
+        <span class="job-record-count">
+            <i class="bi bi-collection me-1"></i>
+            {{ total_jobs }} records
+        </span>
+    </div>
+
+    <!-- Job Cards -->
+    <div class="row g-3">
+
+        {% for job in jobs %}
+
+            <div class="col-12">
+                <div class="job-item">
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+                        <div class="d-flex align-items-start gap-3 flex-grow-1">
+
+                            <div class="job-stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-building"></i>
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <h5 class="job-title mb-1">
+                                    {{ job.title|default:"Untitled Job" }}
+                                </h5>
+
+                                <p class="job-company mb-3">
+                                    <i class="bi bi-building me-1"></i>
+                                    {{ job.company|default:"Company not specified" }}
+                                </p>
+
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+
+                                    {% if job.is_analyzed %}
+                                        <span class="job-status completed">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Analyzed
+                                        </span>
+                                    {% else %}
+                                        <span class="job-status pending">
+                                            <i class="bi bi-clock-fill"></i>
+                                            Analysis Pending
+                                        </span>
+                                    {% endif %}
+
+                                    {% if job.created_at %}
+                                        <span class="job-date">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            {{ job.created_at|date:"d M Y" }}
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <a href="{% url 'jobs:job_detail' job.pk %}"
+                           class="job-view-btn">
+
+                            View Analysis
+                            <i class="bi bi-arrow-right ms-2"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+                <div class="job-empty text-center">
+
+                    <div class="job-empty-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+
+                    <h4 class="fw-bold mt-4 mb-2" style="color:#172033;">
+                        No Job Descriptions Yet
+                    </h4>
+
+                    <p class="text-muted mb-4" style="font-size:14px;">
+                        Add a job description to discover its skills,
+                        responsibilities and qualifications.
+                    </p>
+
+                    <a href="{% url 'jobs:job_create' %}" class="job-add-btn">
+                        <i class="bi bi-plus-lg me-2"></i>
+                        Add Your First Job
+                    </a>
+
+                </div>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock %}

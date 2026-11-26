@@ -1,0 +1,174 @@
+
+{% extends "base.html" %}
+
+{% block title %}Interview Results{% endblock %}
+
+{% block content %}
+
+<style>
+.result-wrap { max-width: 1100px; margin: auto; }
+.result-card {
+    background: #fff;
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    padding: 26px;
+    box-shadow: 0 4px 18px rgba(15,23,42,.035);
+    margin-bottom: 20px;
+}
+.result-score-circle {
+    width: 155px;
+    height: 155px;
+    border-radius: 50%;
+    border: 10px solid #5145e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 22px auto;
+}
+.result-score-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: #5145e5;
+}
+.result-question {
+    background: #f8f9fc;
+    border: 1px solid #e8edf4;
+    border-radius: 13px;
+    padding: 22px;
+    margin-bottom: 16px;
+}
+.result-badge {
+    background: #eeedff;
+    color: #5145e5;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.result-feedback {
+    white-space: pre-line;
+    line-height: 1.7;
+    color: #475467;
+}
+.result-section-title {
+    font-weight: 700;
+    color: #172033;
+}
+</style>
+
+<div class="result-wrap py-4">
+
+    <div class="text-center mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10 text-success p-3 mb-3">
+            <i class="bi bi-check-circle-fill fs-2"></i>
+        </div>
+        <h2 class="fw-bold">Interview Completed!</h2>
+        <p class="text-muted">Your AI-powered interview performance report</p>
+    </div>
+
+    <!-- Overall Performance -->
+    <div class="result-card text-center">
+
+        <h5 class="fw-bold">Overall Performance</h5>
+
+        <div class="result-score-circle">
+            <span class="result-score-number">{{ percentage }}%</span>
+            <small class="text-muted">Overall Score</small>
+        </div>
+
+        <h3 class="fw-bold">{{ total_score }} / {{ max_score }}</h3>
+
+        <p class="text-muted mb-1">{{ session.job_role.title }}</p>
+
+        <p class="text-muted">
+            {{ session.difficulty|title }} · {{ session.category|title }}
+        </p>
+
+        <hr>
+
+        <div class="row g-3">
+            <div class="col-6">
+                <h4 class="fw-bold">{{ total_questions }}</h4>
+                <small class="text-muted">Total Questions</small>
+            </div>
+            <div class="col-6">
+                <h4 class="fw-bold">{{ total_score }}</h4>
+                <small class="text-muted">Marks Obtained</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Question Evaluation -->
+    <div class="result-card">
+
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i class="bi bi-list-check fs-4 text-primary"></i>
+            <h5 class="result-section-title mb-0">Question-wise Evaluation</h5>
+        </div>
+
+        {% for answer in answers %}
+            <div class="result-question">
+
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <h5 class="fw-bold mb-0">
+                        Question {{ answer.interview_question.sequence }}
+                    </h5>
+
+                    <span class="result-badge">
+                        {{ answer.score|default:0 }}/10
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <p class="fw-semibold mb-1">Question</p>
+                    <p class="mb-0">
+                        {{ answer.interview_question.question.question_text }}
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <p class="fw-semibold mb-1">Your Answer</p>
+                    <p class="text-muted mb-0" style="white-space:pre-line;">
+                        {{ answer.answer_text|default:"No answer provided." }}
+                    </p>
+                </div>
+
+                <hr>
+
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-stars text-primary"></i>
+                    <h6 class="fw-bold mb-0">AI Feedback</h6>
+                </div>
+
+                <p class="result-feedback mb-0">
+                    {{ answer.ai_feedback|default:"Feedback not available." }}
+                </p>
+
+            </div>
+        {% empty %}
+            <p class="text-muted">No evaluated answers found.</p>
+        {% endfor %}
+
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+
+        <a href="{% url 'interviews:setup' %}" class="btn btn-primary px-4">
+            <i class="bi bi-arrow-repeat me-2"></i>Start New Interview
+        </a>
+
+        <a href="{% url 'interviews:history' %}" class="btn btn-outline-primary px-4">
+            <i class="bi bi-clock-history me-2"></i>Interview History
+        </a>
+
+        <a href="{% url 'dashboard:home' %}" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-house me-2"></i>Dashboard
+        </a>
+
+    </div>
+
+</div>
+{% endblock %}
